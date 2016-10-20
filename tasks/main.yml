@@ -1,0 +1,19 @@
+---
+- name: install etcd
+  yum:
+    pkg: etcd
+    state: installed
+  register: etcd_installed
+
+- name: create etcd conf
+  template:
+    src: etcd.conf.j2
+    dest: /etc/etcd/etcd.conf
+  when: etcd_installed.changed
+
+- name: start etcd
+  service:
+    name: etcd
+    enabled: yes
+    state: started
+  when: etcd_installed.changed
